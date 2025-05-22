@@ -1,33 +1,34 @@
 import { useRef, useState } from "react";
 import Vector from "../lib/types/Vector";
-import draw from "../lib/main/Draw";
 import Color from "../lib/core/Color";
+import Canva from "../lib/main/Canva";
 
 interface CanvasProps {
   shapes: Vector[];
   setShapes: (shapes: Vector[]) => void;
   currentColor: Color;
-  filter: string;
+  filter?: string;
 }
 
-function Canvas({ shapes, setShapes, currentColor, filter }: CanvasProps) {
+function Canvas({ shapes, setShapes, currentColor }: CanvasProps) {
   const svgRef = useRef<SVGSVGElement>(null);
   const [drawing, setDrawing] = useState(false);
+  const cnv = new Canva();
 
   const start = (e: React.MouseEvent) => {
-    const shape = draw(e.clientX, e.clientY, svgRef.current!, currentColor);
+    const shape = cnv.draw(e.clientX, e.clientY, svgRef.current!, currentColor);
     setShapes([...shapes, shape]);
     setDrawing(true);
   };
-
+  
   const move = (e: React.MouseEvent) => {
     if (!drawing) return;
-    const pt = svgRef.current!.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY;
-    const local = pt.matrixTransform(svgRef.current!.getScreenCTM()!.inverse());
-    const last = shapes[shapes.length - 1];
-    last.props.d += ` L${local.x},${local.y}`;
-    setShapes([...shapes.slice(0, -1), last]);
+    const vector = cnv.update(e.clientX, e.clientY, svgRef.current!, shapes[shapes.length - 1]);
+    setShapes([...shapes.slice(0, -1), vector]);
   };
+
+  console.log(shapes);
+  
 
   const end = () => setDrawing(false);
 

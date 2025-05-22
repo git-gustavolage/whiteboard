@@ -31,12 +31,14 @@ export default function App() {
   const updatePanelHistory = (updater: (h: History) => History) => {
     setPanels(prev => prev.map((p, i) => i === selectedIndex ? { ...p, history: updater(p.history) } : p));
   };
+  
   const undo = () => {
     const { past, present, future } = panels[selectedIndex].history;
     if (!past.length) return;
     const previous = past[past.length - 1];
     updatePanelHistory(() => ({ past: past.slice(0, -1), present: previous, future: [present, ...future] }));
   };
+
   const redo = () => {
     const { past, present, future } = panels[selectedIndex].history;
     if (!future.length) return;
