@@ -1,6 +1,8 @@
-import { useState, createContext, useEffect } from 'react';
+import { useState, createContext } from 'react';
 import Canvas from './main/Canvas';
 import Sidebar from './view/Sidebar';
+import Palette from './lib/core/Palette';
+import Color from './lib/core/Color';
 
 type VectorShape = { id: string; type: 'path'; props: any; fill: string; };
 type History = { past: VectorShape[][]; present: VectorShape[]; future: VectorShape[][]; };
@@ -13,24 +15,10 @@ export function initHistory(): History {
 }
 
 export default function App() {
-  const [currentColor, setCurrentColor] = useState('#000');
+  const [currentColor, setCurrentColor] = useState<Color>(Palette[0]);
   const [panels, setPanels] = useState<ComicPanel[]>([{ id: String(Date.now()), history: initHistory(), filters: 'none' }]);
   const [selectedIndex, setSelectedIndex] = useState(0);
-
-  // Keyboard shortcuts for undo/redo
-  // useEffect(() => {
-  //   const handler = (e: KeyboardEvent) => {
-  //     if (e.ctrlKey && e.key === 'z') {
-  //       e.preventDefault(); undo();
-  //     }
-  //     if (e.ctrlKey && (e.key === 'y' || (e.shiftKey && e.key === 'Z'))) {
-  //       e.preventDefault(); redo();
-  //     }
-  //   };
-  //   window.addEventListener('keydown', handler);
-  //   return () => window.removeEventListener('keydown', handler);
-  // }, [panels, selectedIndex]);
-
+  
   // Panel operations
   const addPanel = () => {
     const newPanel = { id: String(Date.now()), history: initHistory(), filters: 'none' };

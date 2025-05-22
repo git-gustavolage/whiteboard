@@ -1,4 +1,18 @@
+import Color from "../lib/core/Color";
 import palette from "../lib/core/Palette";
+
+interface SidebarPropd {
+  currentColor: Color;
+  setCurrentColor: (color: Color) => void;
+  onUndo: () => void;
+  onRedo: () => void;
+  canUndo: boolean;
+  canRedo: boolean;
+  panels: any[];
+  selectedIndex: number;
+  addPanel: () => void;
+  selectPanel: (index: number) => void;
+}
 
 function Sidebar({ currentColor, setCurrentColor, onUndo, onRedo, canUndo, canRedo, panels, selectedIndex, addPanel, selectPanel }: any) {
 
@@ -27,9 +41,9 @@ function Sidebar({ currentColor, setCurrentColor, onUndo, onRedo, canUndo, canRe
         <h2 className="font-bold">Paleta</h2>
         <div className="flex space-x-2 mt-2">
           {palette.map(col => (
-            <div key={col}
-              className={`w-6 h-6 rounded cursor-pointer border-2 ${currentColor === col ? 'border-black' : 'border-transparent'}`}
-              style={{ backgroundColor: col }}
+            <div key={col?.value}
+              className={`w-6 h-6 rounded cursor-pointer border-2 ${currentColor === col.value ? 'border-black' : 'border-transparent'}`}
+              style={{ backgroundColor: col.value }}
               onClick={() => setCurrentColor(col)}
             />
           ))}

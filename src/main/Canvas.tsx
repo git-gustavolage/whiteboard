@@ -1,12 +1,12 @@
 import { useRef, useState } from "react";
 import Vector from "../lib/types/Vector";
 import draw from "../lib/main/Draw";
-
+import Color from "../lib/core/Color";
 
 interface CanvasProps {
   shapes: Vector[];
-  setShapes: React.Dispatch<React.SetStateAction<Vector[]>>;
-  currentColor: string;
+  setShapes: (shapes: Vector[]) => void;
+  currentColor: Color;
   filter: string;
 }
 
@@ -20,14 +20,6 @@ function Canvas({ shapes, setShapes, currentColor, filter }: CanvasProps) {
     setDrawing(true);
   };
 
-  // const draw = (x: number, y: number, svg: SVGSVGElement): Vector => {
-  //   const pt = svg!.createSVGPoint();
-  //   pt.x = x;
-  //   pt.y = y;
-  //   const local = pt.matrixTransform(svg!.getScreenCTM()!.inverse());
-  //   return { id: String(Date.now()), type: 'path', props: { d: `M${local.x},${local.y}` }, fill: currentColor } as Vector;
-  // }
-
   const move = (e: React.MouseEvent) => {
     if (!drawing) return;
     const pt = svgRef.current!.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY;
@@ -40,8 +32,19 @@ function Canvas({ shapes, setShapes, currentColor, filter }: CanvasProps) {
   const end = () => setDrawing(false);
 
   return (
-    <svg ref={svgRef} className="flex-1 h-full" style={{ filter }} onMouseDown={start} onMouseMove={move} onMouseUp={end}>
-      {shapes.map(s => <path key={s.id} d={s.props.d} stroke={s.fill} fill="none" strokeWidth={2} />)}
+    <svg ref={svgRef} className="flex-1 h-full" style={{ filter: "artBrush" }} onMouseDown={start} onMouseMove={move} onMouseUp={end}>
+      {shapes.map(s => (
+        <path
+          key={s.id}
+          d={s.props.d}
+          stroke={s.fill}
+          fill="none"
+          strokeWidth={10}
+          strokeLinecap="round"
+          strokeOpacity={1}
+          strokeLinejoin="round"
+        />)
+      )}
     </svg>
   );
 }
